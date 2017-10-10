@@ -8,17 +8,6 @@ source "$BASE_DIR/conf/env-operations-layout.inc.bash"
 DEPL_DIR=$BASE_DIR
 source "$BASE_DIR/lib/common.inc.bash"
 
-function infra_var() {
-    local path=$1
-
-    bosh2 int "$BASE_DIR/conf/env-infra-vars.yml" \
-        --path "$path"
-}
-
-function bbl_invoke() {
-    bbl --state-dir "$BASE_DIR/state" "$@"
-}
-
 function bosh2_ro_invoke() {
     local verb=$1
     shift
@@ -27,9 +16,8 @@ function bosh2_ro_invoke() {
 
     bosh2 "$verb" "$MAIN_DEPLOYMENT_FILE" \
         "${operations_arguments[@]}" \
-        --vars-file "$BASE_DIR/conf/env-infra-vars.yml" \
         "$@" \
-        --vars-file "$BASE_DIR/conf/env-depl-vars.yml" # override bbl defaults
+        --vars-file "$BASE_DIR/conf/env-depl-vars.yml"
 }
 
 function bosh2_rw_invoke() {
@@ -37,7 +25,6 @@ function bosh2_rw_invoke() {
     shift
 
     bosh2_ro_invoke "$verb" \
-        --vars-file <(bbl_invoke bosh-deployment-vars) \
         --vars-store "$BASE_DIR/state/env-creds.yml" \
         --state "$BASE_DIR/state/env-infra-state.json" \
         "$@"
