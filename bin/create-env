@@ -1,7 +1,21 @@
 #!/usr/bin/env bash
 
-source "$BASE_DIR/lib/common.inc.bash"
+source "$BASE_DIR/lib/infra.inc.bash"
+source "$BASE_DIR/lib/colors.inc.bash"
+
+set -e
+
 
 bosh2_ro_invoke interpolate > "$BASE_DIR/state/env-depl-manifest.yml"
 
+
+echo -e "\n${BLUE}Running ${BOLD}bosh create-env$RESET to create the BOSH environment\n"
+
 bosh2_rw_invoke create-env
+
+
+echo -e "\n${BLUE}Aliasing the created BOSH environment to ${BOLD}'$BOSH_ENVIRONMENT'$RESET\n"
+
+bosh2 -e "$(bosh2 int <(bbl_invoke bosh-deployment-vars) --path /external_ip)" \
+    --ca-cert <(bosh2 int "$BASE_DIR/state/env-creds.yml" --path /director_ssl/ca) \
+    alias-env "$BOSH_ENVIRONMENT"
