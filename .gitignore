@@ -1,1 +1,5 @@
-env-creds.yml
+creds.yml
+*-creds.yml
+bbl-state.json
+*.key
+*.key.json
