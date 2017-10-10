@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+source "$BASE_DIR/lib/common.inc.bash"
+
+bosh2_ro_invoke interpolate > "$BASE_DIR/state/env-depl-manifest.yml"
+
+bosh2_rw_invoke create-env

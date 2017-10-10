@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+source "$BASE_DIR/lib/common.inc.bash"
+source "$BASE_DIR/lib/colors.inc.bash"
+
+bosh2_ro_invoke interpolate --vars-store "$BASE_DIR/state/env-creds.yml" --var-errs > /dev/null
+status=$?
+if [ $status -eq 0 ]; then
+    echo "$BOLD${GREEN}OK$RESET" >&2
+else
+    echo "$BOLD${RED}KO$RESET" >&2
+fi
+exit $status
